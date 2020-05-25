@@ -18,12 +18,8 @@ print(master_yoda('I am home'))
 
 def has_33(nums):
     counter = 0
-    for num in nums:
-        if num == 3:
-            counter += 1
-        else:
-            counter = 0
-        if counter == 2:
+    for i in range(0, len(nums) - 1):
+        if nums[i] == 3 and nums[i+1] == 3:
             return True
     return False
 
@@ -52,12 +48,31 @@ print(paper_doll("Hhello"))
 def blackjack(a, b, c):
     result = a + b + c
     if result <= 21:
-        return a + b + c
+        return result
+    elif result <= 31 and 11 in (a, b, c):
+        return result - 10
     else:
-        if a == 11 or b == 11 or c == 11:
-            return result - 10
-        else:
-            return "BUST"
+        return "BUST"
 
 
 print(blackjack(10, 9, 9))
+
+
+#  SPY GAME: Write a function that takes in a list of integers and returns True if it contains 007 in order
+#  spy_game([1,2,4,0,0,7,5]) --> True
+#  spy_game([1,0,2,4,0,5,7]) --> True
+#  spy_game([1,7,2,0,4,5,0]) --> False
+
+
+def spy_game(nums):
+    code = [0, 0, 7, 'x']
+
+    for num in nums:
+        if num == code[0]:
+            code.pop(0)
+
+    return len(code) == 1
+
+
+# Check
+spy_game([1, 2, 4, 0, 0, 7, 5])
