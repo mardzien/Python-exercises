@@ -31,7 +31,7 @@ class Card(object):
         self.rank = rank
 
     def __str__(self):
-        return f"{self.suit} of {self.rank}"
+        return f"{self.rank} of {self.suit}"
 
 
 class Deck(object):
@@ -40,16 +40,20 @@ class Deck(object):
         self.deck = []
         for suit in suits:
             for rank in ranks:
-                self.deck.append((rank, suit))
+                self.deck.append(Card(suit, rank))
 
     def __str__(self):
-        return f"{self.deck}"
+        deck_comp = ''
+        for card in self.deck:
+            deck_comp += '\n' + card.__str__()
+        return f"The deck has: {deck_comp}"
 
     def shuffle(self):
         random.shuffle(self.deck)
 
     def deal(self):
-        return self.deck.pop()
+        last_card = self.deck.pop()
+        return last_card
 
 
 class Hand(object):
@@ -58,15 +62,50 @@ class Hand(object):
         self.value = 0
         self.aces = 0
 
-    def add_card(self, card):
+    def add_card(self, card: Card):
         self.cards.append(card)
-        self.value += values[card[0]]
-        if card[0] == 'Ace':
+        self.value += values[card.rank]
+        if card.rank == 'Ace':
             self.aces += 1
 
     def adjust_for_aces(self):
-        if self.value > 21 and self.aces > 0:
+        if self.value > 21 and self.aces:
             self.value -= 10
+            self.aces -= 1
+
+
+class Chips(object):
+
+    def __init__(self, total=100):
+        self.total = total
+        self.bet = 0
+
+    def win_bet(self):
+        self.total += self.bet
+
+    def lose_bet(self):
+        self.total -= self.bet
+
+
+def take_bet(chips: Chips):
+
+    while True:
+        try:
+            chips.bet = int(input("How many chips would like to bet?"))
+        except ValueError:
+            print("A bet must be integer!")
+        else:
+            if chips.bet > chips.total:
+                print("Sorry, your bet can't exceed ", chips.total)
+            else:
+                break
+
+
+def hit(deck: Deck, hand: Hand):
+
+    single_card = deck.deal()
+    hand.add_card(single_card)
+    hand.adjust_for_aces()
 
 
 test_deck = Deck()
@@ -74,5 +113,8 @@ print(test_deck)
 test_deck.shuffle()
 test_deck.shuffle()
 print(test_deck)
-card = Card(*test_deck.deal())
-print(card)
+pulled_card = test_deck.deal()
+player = Hand()
+player.add_card(pulled_card)
+print(player.value)
+
