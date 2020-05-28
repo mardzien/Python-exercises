@@ -101,6 +101,28 @@ def take_bet(chips: Chips):
                 break
 
 
+def show_some(player, dealer):
+
+    print("Dealers hand:")
+    print("one card hidden!")
+    print(dealer.cards[1])
+    print()
+    print("Players hand:")
+    for card in player.cards:
+        print(card)
+
+
+def show_all(player, dealer):
+
+    print("Dealers hand:")
+    for card in dealer.cards:
+        print(card)
+    print()
+    print("Players hand:")
+    for card in player.cards:
+        print(card)
+
+
 def hit(deck: Deck, hand: Hand):
 
     single_card = deck.deal()
@@ -108,13 +130,65 @@ def hit(deck: Deck, hand: Hand):
     hand.adjust_for_aces()
 
 
-test_deck = Deck()
-print(test_deck)
-test_deck.shuffle()
-test_deck.shuffle()
-print(test_deck)
-pulled_card = test_deck.deal()
-player = Hand()
-player.add_card(pulled_card)
-print(player.value)
+def hit_or_stand(deck: Deck, hand: Hand):
+    global playing
 
+    while True:
+        x = input("Hit or stand? Enter h or s") # h- hit, s- stand
+
+        if x[0].lower() == 'h':
+            hit(deck, hand)
+
+        elif [0].lower() == 's':
+            print("Player stands. Dealer's turn")
+            playing = False
+
+        else:
+            print("Please enter h or s only")
+
+        break
+
+
+def player_busts(player, dealer, chips):
+    print("Bust player!")
+    chips.lose_bet()
+
+
+def player_wins(player, dealer, chips):
+    print("Player wins!")
+    chips.win_bet()
+
+
+def dealer_busts(player, dealer, chips):
+    print("Player wins, dealer busted!")
+    chips.win_bet()
+
+
+def dealer_wins(player, dealer, chips):
+    print("Dealer wins!")
+    chips.lose_bet()
+
+
+def push(player, dealer):
+    print("Dealer and player tie!")
+
+
+if __name__ == "__main__":
+
+    while True:
+        deck = Deck()
+        deck.shuffle()
+
+        player_hand = Hand()
+        player_hand.add_card(deck.deal())
+        player_hand.add_card(deck.deal())
+
+        dealer_hand = Hand()
+        dealer_hand.add_card(deck.deal())
+        dealer_hand.add_card(deck.deal())
+
+        player_chips = Chips()
+
+        take_bet(player_chips)
+
+        show_some(player_hand, dealer_hand)
