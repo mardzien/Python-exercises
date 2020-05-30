@@ -134,12 +134,12 @@ def hit_or_stand(deck: Deck, hand: Hand):
     global playing
 
     while True:
-        x = input("Hit or stand? Enter h or s") # h- hit, s- stand
+        x = input("Hit or stand? Enter h or s: ")# h- hit, s- stand
 
         if x[0].lower() == 'h':
             hit(deck, hand)
 
-        elif [0].lower() == 's':
+        elif x[0].lower() == 's':
             print("Player stands. Dealer's turn")
             playing = False
 
@@ -176,6 +176,8 @@ def push(player, dealer):
 if __name__ == "__main__":
 
     while True:
+
+        #start conditions of the game
         deck = Deck()
         deck.shuffle()
 
@@ -192,3 +194,43 @@ if __name__ == "__main__":
         take_bet(player_chips)
 
         show_some(player_hand, dealer_hand)
+        
+        while playing:
+            
+            hit_or_stand(deck, player_hand)
+            
+            show_some(player_hand, dealer_hand)
+            
+            if player_hand.value > 21:
+                player_busts(player_hand, dealer_hand, player_chips)
+                break
+
+            # setting up dealer to hit when his value is less than 17
+
+        if player_hand.value <= 21:
+
+            while dealer_hand.value < 17:
+                hit(deck, dealer_hand)
+
+            show_all(player_hand, dealer_hand)
+
+            if dealer_hand.value > 21:
+                dealer_busts(player_hand, dealer_hand, player_chips)
+            elif dealer_hand.value > player_hand.value:
+                dealer_wins(player_hand, dealer_hand, player_chips)
+            elif dealer_hand.value < player_hand.value:
+                player_wins(player_hand, dealer_hand, player_chips)
+            else:
+                push(player_hand, dealer_hand)
+
+        print()
+        print(f'Player total chips are at: {player_chips.total}')
+
+        new_game = input("Would you like to play another hand? y/n: ")
+
+        if new_game[0].lower() == 'y':
+            playing = True
+            continue
+        else:
+            print("Thank you for playing!")
+            break
